@@ -1,6 +1,7 @@
 var express = require('express');
 var multer =require('multer');
 var excel = require('excel');
+var x1=require('excel4node');
 var xlsx= require('xlsx');
 var upload = multer();
 
@@ -26,12 +27,6 @@ const arrayJsonMerge = (array) => {
 
 const createExcel = (array) => {
     let workseet = new xlsx;
-    
-    
-    console.log(xlsx.createExcel(array));
-    
-    return xlsx.writeFile;  //여기부터 수정할것
-    
 
 };
 
