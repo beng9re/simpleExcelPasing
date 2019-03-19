@@ -12,12 +12,37 @@ router.get('/', function(req, res, next) {
 });
 
 
+const arrayJsonMerge = (array) => { 
+    let resultArray=new Array();
+    array.forEach(element => {
+        element.forEach(lowerElement=>{
+            resultArray.push(lowerElement);
+        });
+    });
+    console.dir(resultArray);
+
+    return resultArray;
+};
+
+const createExcel = (array) => {
+    let workseet = new xlsx;
+    
+    
+    console.log(xlsx.createExcel(array));
+    
+    return xlsx.writeFile;  //여기부터 수정할것
+    
+
+};
+
 
 
 
 router.post('/excelParse', upload.single("uploadfile"), function(req, res, next) {
     let work = xlsx.read(req.file.buffer);
-    let workseet=work.Sheets["Sheet1"];
+    const workseet=work.Sheets["Sheet1"];
+    
+    
     let ref = workseet["!ref"].replace(/A/gi,'').split(":");
     console.log(ref);
     let tempArray = new Array();
@@ -26,17 +51,25 @@ router.post('/excelParse', upload.single("uploadfile"), function(req, res, next)
         tempArray.push("A"+i);
     }
     console.log(tempArray);
+     let map = tempArray.map(s=>JSON.parse(workseet[s].w).data);
     
-    tempArray.forEach(s => {
-        console.log(workseet[s].w);
-    });
-  
-    //tempArray.push
-    console.log("sad"+workseet.A2);
+    res.send
     
-    res.json(workseet);
-    // console.log(workseet);  
+    createExcel(arrayJsonMerge(map));
+     try {
+        res.json(arrayJsonMerge(map));    
+    } catch (error) {
+        res.json(error);
+    }
+    
+    
+
+
 });
+
+
+
+
 
 
 
