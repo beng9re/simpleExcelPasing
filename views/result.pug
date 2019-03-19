@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    form(action="/parse/excelParse" method="post" enctype="multipart/form-data")
+        input(type='file' name="uploadfile" )
+        button(type='submit') 전송
+
+    map #{data}
