@@ -27,7 +27,6 @@ const arrayJsonMerge = (array) => {
 const createExcel = (array) => {
     let workseet = new xlsx;
     
-    
     console.log(xlsx.createExcel(array));
     
     return xlsx.writeFile;  //여기부터 수정할것
@@ -51,25 +50,21 @@ router.post('/excelParse', upload.single("uploadfile"), function(req, res, next)
         tempArray.push("A"+i);
     }
     console.log(tempArray);
-     let map = tempArray.map(s=>JSON.parse(workseet[s].w).data);
+    let map = tempArray.map(s=>JSON.parse(workseet[s].w).data);
     
-    res.send
+    map=arrayJsonMerge(map);
     
+    /*
     createExcel(arrayJsonMerge(map));
      try {
         res.json(arrayJsonMerge(map));    
     } catch (error) {
         res.json(error);
-    }
+    }*/
     
-    
-
+    res.render('result',{data:map,title:'파싱된다'});
 
 });
-
-
-
-
 
 
 
