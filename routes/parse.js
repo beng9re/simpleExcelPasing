@@ -4,6 +4,8 @@ var excel = require('excel');
 var xlsx= require('xlsx');
 var upload = multer();
 
+
+
 const router = express.Router();
 
 /* GET home page. */
@@ -19,12 +21,16 @@ const arrayJsonMerge = (array) => {
             resultArray.push(lowerElement);
         });
     });
-    console.dir(resultArray);
-
     return resultArray;
 };
 
-const createExcel = (array) => {
+
+const jsonToHeader = (json) => Object.keys(json[0]);
+
+
+
+
+const createExcel = (json) => {
     let workseet = new xlsx;
     
     console.log(xlsx.createExcel(array));
@@ -34,35 +40,41 @@ const createExcel = (array) => {
 
 };
 
+const createCVS = (json) =>{
+    
+}
+
 
 
 
 router.post('/excelParse', upload.single("uploadfile"), function(req, res, next) {
-    let work = xlsx.read(req.file.buffer);
+    let work;
+    try { 
+        //버퍼 값 
+        work = xlsx.read(req.file.buffer);
+    }
+    catch(e){
+        res.render('result',{check:false,msg:`재시도 요청 ${e}`,title:'파싱된다'});
+    }
+
     const workseet=work.Sheets["Sheet1"];
-    
-    
-    let ref = workseet["!ref"].replace(/A/gi,'').split(":");
-    console.log(ref);
+    let ref = workseet["!ref"].replace(/[A-Za-z]*/gi,'').split(":");
+    //console.log(ref);
     let tempArray = new Array();
     
     for(let i = ref[0];i<ref[1];i++){
         tempArray.push("A"+i);
     }
-    console.log(tempArray);
+    //console.log(tempArray);
     let map = tempArray.map(s=>JSON.parse(workseet[s].w).data);
     
+    
     map=arrayJsonMerge(map);
-    
-    /*
-    createExcel(arrayJsonMerge(map));
-     try {
-        res.json(arrayJsonMerge(map));    
-    } catch (error) {
-        res.json(error);
-    }*/
-    
-    res.render('result',{data:map,title:'파싱된다'});
+    const key= Object.keys(map[0]); //header 값
+    const values = map;             //value 값
+
+    console.debug(typeof(values));
+    res.render('result',{check:true,key:key,list:values,title:'파싱된다'});
 
 });
 

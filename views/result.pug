@@ -4,5 +4,19 @@ block content
     form(action="/parse/excelParse" method="post" enctype="multipart/form-data")
         input(type='file' name="uploadfile" )
         button(type='submit') 전송
-
-    map #{data}
+    if  check 
+        table(border=1)
+            tr
+            each item in key
+                    th  #{item}
+            
+            each node in list
+                tr
+                    each item in key
+                        td  #{node[item]}                
+    else 
+        #{msg}
+        
+            
+     
+                
